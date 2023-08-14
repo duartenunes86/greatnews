@@ -18,9 +18,24 @@ describe('/api/topics', () => {
       .then((response) => {
         expect(response.body.topics).toEqual(expect.any(Array));
         expect(Object.keys(response.body.topics[0])).toEqual(
-          expect.arrayContaining(['slug', 'description'])
-        );
+          expect.arrayContaining(['slug', 'description']))
+          expect(Object.keys(response.body.topics[1])).toEqual(
+            expect.arrayContaining(['slug', 'description']))
+            expect(Object.keys(response.body.topics[2])).toEqual(
+                expect.arrayContaining(['slug', 'description']))
+          expect(response.body.topics.length).toBe(3)
+                 
       });
   });
 }
 )
+describe('error 404', ()=>{
+    test('GET:404 Not found', ()=>{
+        
+            return request(app)
+            .get('/api/tropics')
+            .expect(404)
+   
+        })
+    })
+   
