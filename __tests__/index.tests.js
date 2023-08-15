@@ -53,10 +53,11 @@ describe('error 404 GET /api/topics/', ()=>{
                      
           });
       });
+
     }
     )
-    describe('error 404 GET /api/topics/', ()=>{
-      test('GET:404 Not found', ()=>{
+    describe('error 404 on GET /api bad path', ()=>{
+      test('GET:404', ()=>{
           
               return request(app)
               .get('/apii')
@@ -64,4 +65,36 @@ describe('error 404 GET /api/topics/', ()=>{
      
           })
       })
+      describe('GET /api/articles/:article_id', () => {
+        test('GET:200 sends an object with the article corresponding to the id given to the client', () => {
+          return request(app)
+            .get('/api/articles/1')
+            .expect(200)
+            .then((response) => {
+              console.log(response.body)
+              expect(response.body.article).toEqual(expect.any(Object));
+              expect(Object.keys(response.body.article[0])).toEqual(
+                expect.arrayContaining(["author",
+                "title",
+                "article_id",
+                "body",
+                "topic",
+                "created_at",
+                "votes",
+                "article_img_url"  ]))
+                expect(response.body.article[0].article_id).toBe(1)
+                
+                       
+            });
+        })
+        test('GET:404 on bad path', ()=>{
+          
+          return request(app)
+          .get('/api/articless/1')
+          .expect(404)
+ 
+      })
+        
+      }
+      )
      
