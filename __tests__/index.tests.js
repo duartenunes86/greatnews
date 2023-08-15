@@ -16,6 +16,7 @@ describe('/api/topics', () => {
       .get('/api/topics')
       .expect(200)
       .then((response) => {
+        
         expect(response.body.topics).toEqual(expect.any(Array));
         expect(Object.keys(response.body.topics[0])).toEqual(
           expect.arrayContaining(['slug', 'description']))
@@ -29,7 +30,7 @@ describe('/api/topics', () => {
   });
 }
 )
-describe('error 404', ()=>{
+describe('error 404 GET /api/topics/', ()=>{
     test('GET:404 Not found', ()=>{
         
             return request(app)
@@ -39,3 +40,28 @@ describe('error 404', ()=>{
         })
     })
    
+    describe('GET /api', () => {
+      test('GET:200 sends an object with the endpoints to the client', () => {
+        return request(app)
+          .get('/api')
+          .expect(200)
+          .then((response) => {
+            expect(response.body.endpoints).toEqual(expect.any(Object));
+            expect(Object.keys(response.body.endpoints)).toEqual(
+              expect.arrayContaining(["GET /api", "GET /api/topics","GET /api/articles",  ]))
+              
+                     
+          });
+      });
+    }
+    )
+    describe('error 404 GET /api/topics/', ()=>{
+      test('GET:404 Not found', ()=>{
+          
+              return request(app)
+              .get('/apii')
+              .expect(404)
+     
+          })
+      })
+     
