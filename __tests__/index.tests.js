@@ -67,8 +67,9 @@ describe('error 404 GET /api/topics/', ()=>{
       })
       describe('GET /api/articles/:article_id', () => {
         test('GET:200 sends an object with the article corresponding to the id given to the client', () => {
+          
           return request(app)
-            .get('/api/articles/1')
+            .get(`/api/articles/1`)
             .expect(200)
             .then((response) => {
               console.log(response.body)
@@ -83,10 +84,11 @@ describe('error 404 GET /api/topics/', ()=>{
                 "votes",
                 "article_img_url"  ]))
                 expect(response.body.article[0].article_id).toBe(1)
-                
+              
                        
             });
-        })
+          }
+        )
         test('GET:404 on bad path', ()=>{
           
           return request(app)
