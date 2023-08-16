@@ -11,9 +11,9 @@ const {
     
     
     selectArticleById(article_id).then((article) => {
-      console.log(article, "Article")
       
-      if (article.length===0 && !isNaN(article_id)) {res.status(404).send({ msg:'article doesn\'t exist' });
+      
+      if (article.length===0) {res.status(404).send({ msg:'article doesn\'t exist' });
 }
 
       res.status(200).send( {article });
@@ -35,14 +35,17 @@ const {
         }
         exports.getCommentsByArticle = (req, res, next) => {
         const id =req.params.article_id;
-        console.log(id)
+        
         
           selectCommentsByArticle(id).then((results) => {
+           
             if (results.length===0) {res.status(404).send({ msg:'article doesn\'t exist' });
-      }
+          }else{
             res.status(200).send( {results });
-            
-          }) .catch((err) => {
-            next(err);
-          });
           }
+            
+          }) .catch((error) => {
+            res.status(500).send({ msg: 'An error occurred' });
+  });
+          };
+          

@@ -53,7 +53,7 @@ describe('error 404 GET /api/topics/', ()=>{
           .expect(200)
           .then((response) => {
             
-            expect(response.body.endpoints).toEqual(expect.any(Object));
+           
             expect(Object.keys(response.body.endpoints)).toEqual(
               
               expect.arrayContaining(Object.keys(endpoints1)  ))
@@ -98,6 +98,10 @@ describe('error 404 GET /api/topics/', ()=>{
                 "votes",
                 "article_img_url"  ]))
                 expect(response.body.article[0].article_id).toBe(1)
+                expect(response.body.article[0].title).toEqual("Living in the shadow of a great man")
+                expect(response.body.article[0].topic).toEqual("mitch")
+                expect(response.body.article[0].author).toEqual("butter_bridge")
+                expect(response.body.article[0].body).toEqual("I find this existence challenging")
               
                        
             });
@@ -112,10 +116,10 @@ describe('error 404 GET /api/topics/', ()=>{
       })
       test('GET:404 sends an appropriate and error message when given a valid but non-existent id', () => {
         return request(app)
-          .get('/api/articles/9999999')
+          .get('/api/articles/99999999999999')
           .expect(404)
           .then((response) => {
-            console.log(response.body.msg)
+            
             expect(response.body.msg).toBe('article doesn\'t exist');
           });
       });  
@@ -163,9 +167,8 @@ describe('error 404 GET /api/topics/', ()=>{
             .get(`/api/articles/1/comments`)
             .expect(200)
             .then((response) => {
-              console.log(response.body.results)
-              expect(response.body.results).toEqual(expect.any(Object));
-              expect(Object.keys(response.body.results[0])).toEqual(
+              
+                expect(Object.keys(response.body.results[0])).toEqual(
                 expect.arrayContaining([    "comment_id",
                   "votes",
                   "created_at",
@@ -187,10 +190,10 @@ describe('error 404 GET /api/topics/', ()=>{
       })
       test('GET:404 sends an appropriate and error message when given a valid but non-existent id', () => {
         return request(app)
-          .get('/api/articles/9999999/comments')
+          .get('/api/articles/999999999/comments')
           .expect(404)
           .then((response) => {
-            console.log(response.body.msg)
+            
             expect(response.body.msg).toBe('article doesn\'t exist');
           });
       });  
