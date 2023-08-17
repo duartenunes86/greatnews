@@ -21,37 +21,35 @@ const {
 
   }) 
     .catch((err) => {
-      console.log(err)
-      const{status, msg} = err
-
-      res.status(status).send({msg})
+      
+      next(err)
   });
 } 
     
     exports.getArticles = (req, res, next) => {
         
-        selectArticles().then((results) => {
+        selectArticles().then((articles) => {
 
           
-          res.status(200).send( {results });
+          res.status(200).send( {articles});
           
         }) 
-        // .catch((err) => {
-        //   next(err);
-        // });
+        .catch((err) => {
+          next(err);
+        });
         }
         exports.getCommentsByArticle = (req, res, next) => {
         const id =req.params.article_id;
         
         
-          selectCommentsByArticle(id).then((results) => {
+          selectCommentsByArticle(id).then((comments) => {
            
             
-            res.status(200).send( {results });
+            res.status(200).send( {comments});
           
             
-          }) .catch((error) => {
-            const{status, msg}=error
-            res.status(status).send({msg});
+          }) .catch((err) => {
+            
+            next(err)
   })
 }

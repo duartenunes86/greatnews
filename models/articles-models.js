@@ -1,18 +1,31 @@
 const db = require('../db/connection');
+const format = require('pg-format');
+
+const checkExists = async (table, column, value) => {
+  
+  const queryStr = format('SELECT * FROM %I WHERE %I = $1;', table, column);
+  const dbOutput = await db.query(queryStr, [value]);
+
+  if (dbOutput.rows.length === 0) {
+   
+    return Promise.reject({ status: 404, msg: 'item doesn\'t exist' });
+  }
+  else return true
+};
 
 exports.selectArticleById = (id) => {
-  if(isNaN(id)){return Promise.reject({status:400, msg:"Invalid id" })}
-  else{
-  return db.query(`SELECT * FROM articles WHERE article_id=${id};`).then((result) => {
+   
+ 
+  return db.query(`SELECT * FROM articles WHERE article_id=$1;`,[id]).then((result) => {
     if(result.rows.length===0){
       return Promise.reject({status:404, msg:"article doesn't exist"})
     } 
-    else{
+   else{
     return result.rows[0];
     }
   
   })
-}
+
 };
 exports.selectArticles = () => {
     
@@ -37,23 +50,16 @@ exports.selectArticles = () => {
   };
 
   exports.selectCommentsByArticle = (id) =>{
-    if(isNaN(id)){return Promise.reject({status:400, msg:"Invalid id" })}
-   return db.query(`SELECT * FROM articles WHERE article_id=${id};`).then((articles)=>{
 
+    return checkExists('articles', 'article_id',id).then((exists) => {
   
-
-    
-    if(articles.rows.length===0){
-      return Promise.reject({status:404, msg:`article doesn't exist`})
-    }
+    if(exists===true){
     return db.query(` SELECT comment_id,
     votes,
     created_at,
     author,
     body,
-    article_id FROM comments WHERE article_id=${id};`).then((result)=>{
+    article_id FROM comments WHERE article_id=$1;`, [id]).then((result)=>{
       
       return result.rows;
-    })
-
-  })}
+      })}})}

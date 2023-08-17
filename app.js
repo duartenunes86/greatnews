@@ -14,30 +14,28 @@ app.get('/api', getAPI)
 app.get('/api/articles/:article_id',getArticleById)
 app.get('/api/articles', getArticles)
 app.get('/api/articles/:article_id/comments', getCommentsByArticle)
-app.use((err, request, response, next) =>{
-  if(err.code === '23502'){
-    response.status(400).send({msg: 'Bad request'})
-  }
-  else{
-    next(err)
-  }
-})
-
-
-app.use((err, req, res, next) => {
-  
+handleCustomErrors = (err, req, res, next) => {
   if (err.status && err.msg) {
     res.status(err.status).send({ msg: err.msg });
-  }
-  
-  else if (err.code === '22P02') {
-    res.status(400).send({ msg: err.message || 'Bad Request' });
-  } else {
-    
-    console.log(err);
-    res.status(500).send({ msg: 'Internal Server Error' });
-  }
-})
+  } else next(err);
+};
+
+handlePsqlErrors = (err, req, res, next) => {
+  if (err.code === '22P02') {
+    res.status(400).send({ msg: 'Invalid input' });
+  } else next(err);
+};
+
+handleServerErrors = (err, req, res, next) => {
+  console.log(err);
+  res.status(500).send({ msg: 'Internal Server Error' });
+};
+
+app.use(handleCustomErrors);
+app.use(handlePsqlErrors);
+app.use(handleServerErrors);
+
+
 
 
   

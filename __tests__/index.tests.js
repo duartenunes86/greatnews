@@ -112,7 +112,7 @@ describe('error 404 GET /api/topics/', ()=>{
       })
       test('GET:404 sends an appropriate and error message when given a valid but non-existent id', () => {
         return request(app)
-          .get('/api/articles/99999999999999')
+          .get('/api/articles/999')
           .expect(404)
           .then((response) => {
             
@@ -124,7 +124,7 @@ describe('error 404 GET /api/topics/', ()=>{
           .get('/api/articles/banana')
           .expect(400)
           .then((response) => {
-            expect(response.body.msg).toBe('Invalid id');
+            expect(response.body.msg).toBe('Invalid input');
           });
       }
       )
@@ -137,8 +137,8 @@ describe('error 404 GET /api/topics/', ()=>{
             .expect(200)
             .then((response) => {
            
-               expect(response.body.results).toBeSortedBy("created_at", {descending: true})
-              return response.body.results.forEach(element=>{
+               expect(response.body.articles).toBeSortedBy("created_at", {descending: true})
+              response.body.articles.forEach(element=>{
                 
                 
                 expect(element).toEqual(expect.objectContaining({
@@ -175,9 +175,9 @@ describe('error 404 GET /api/topics/', ()=>{
             .expect(200)
             .then((response) => {
               
-                
+               
          
-                return response.body.results.forEach(element=>{
+                  response.body.comments.forEach(element=>{
                 
                 
                   expect(element).toEqual(expect.objectContaining({
@@ -203,11 +203,11 @@ describe('error 404 GET /api/topics/', ()=>{
       })
       test('GET:404 sends an appropriate and error message when given a valid but non-existent id', () => {
         return request(app)
-          .get('/api/articles/999999999/comments')
+          .get('/api/articles/999/comments')
           .expect(404)
           .then((response) => {
             
-            expect(response.body.msg).toBe('article doesn\'t exist');
+            expect(response.body.msg).toBe('item doesn\'t exist');
           });
       })
       test('GET:400 sends an appropriate and error message when given an invalid id', () => {
@@ -215,7 +215,7 @@ describe('error 404 GET /api/topics/', ()=>{
           .get('/api/articles/banana/comments')
           .expect(400)
           .then((response) => {
-            expect(response.body.msg).toBe('Invalid id');
+            expect(response.body.msg).toBe('Invalid input');
           });
       }
       ) 
