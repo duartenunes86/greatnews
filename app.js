@@ -23,12 +23,22 @@ app.use((err, request, response, next) =>{
   }
 })
 
-app.use((err, request, response, next) =>{
-  if(err.status===404){
-    response.status(404).send(err.msg)
+
+app.use((err, req, res, next) => {
+  
+  if (err.status && err.msg) {
+    res.status(err.status).send({ msg: err.msg });
+  }
+  
+  else if (err.code === '22P02') {
+    res.status(400).send({ msg: err.message || 'Bad Request' });
+  } else {
+    
+    console.log(err);
+    res.status(500).send({ msg: 'Internal Server Error' });
   }
 })
-//
+
 
   
   
