@@ -1,17 +1,18 @@
 const db = require('../db/connection');
 const format = require('pg-format');
 
-const checkExists = async (table, column, value) => {
+const checkExists =  (table, column, value) => {
   
-  const queryStr = format('SELECT * FROM %I WHERE %I = $1;', table, column);
-  const dbOutput = await db.query(queryStr, [value]);
-
+ const queryStr= format('SELECT * FROM %I WHERE %I = $1;', table, column)
+  return db.query(queryStr, [value]).then((dbOutput)=>{
+console.log(db.Output)
   if (dbOutput.rows.length === 0) {
    
     return Promise.reject({ status: 404, msg: 'item doesn\'t exist' });
   }
   else return true
-};
+})}
+
 
 exports.selectArticleById = (id) => {
    
