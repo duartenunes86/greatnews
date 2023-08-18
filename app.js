@@ -4,16 +4,17 @@ const {
   getTopics
 } = require('./controllers/topics-controllers.js');
 const { getAPI } = require('./controllers/api-controllers.js')
-const { getArticleById, getArticles, getCommentsByArticle } = require('./controllers/articles-controllers.js')
+const { getArticleById, getArticles, getCommentsByArticle, postCommentToArticle } = require('./controllers/articles-controllers.js')
 
 
-
+app.use(express.json())
 
 app.get('/api/topics', getTopics);
 app.get('/api', getAPI)
 app.get('/api/articles/:article_id',getArticleById)
 app.get('/api/articles', getArticles)
 app.get('/api/articles/:article_id/comments', getCommentsByArticle)
+app.post('/api/articles/:article_id/comments', postCommentToArticle)
 handleCustomErrors = (err, req, res, next) => {
   if (err.status && err.msg) {
     res.status(err.status).send({ msg: err.msg });

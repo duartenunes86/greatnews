@@ -6,7 +6,8 @@ const topicData = require('../db/data/test-data/topics');
 const userData = require('../db/data/test-data/users');
 const articleData = require('../db/data/test-data/articles');
 const commentData = require('../db/data/test-data/comments');
-const fs = require('fs/promises')
+const fs = require('fs/promises');
+const {checkExists} = require('../utils.js');
 
 
 
@@ -225,3 +226,54 @@ describe('error 404 GET /api/topics/', ()=>{
         .expect(200)
       })
     })
+    describe("Post 201: inserts a new comment to some article", ()=>{ 
+      let dateCreated=""
+      test('POST:201 inserts a new comment to the db and sends the new comment back to the client', () => {
+        const newComment = {
+          username: 'butter_bridge',
+          body: 'I do not believe you'
+        };
+        return request(app)
+          .post('/api/articles/1/comments')
+          .send(newComment)
+          .expect(201)
+          .then((response) => {
+            console.log(response.body)
+            expect(response.status).toBe(201); // Check the HTTP status code
+    expect(response.body.comment).toHaveProperty('created_at'); // Check if 'comment' property exists
+    expect(response.body.comment.body).toEqual(newComment.body);
+    expect(response.body.comment.author).toEqual(newComment.username);
+    expect(response.body.comment.votes).toEqual(0)
+    expect(response.body.comment.article_id).toEqual(1)
+     
+     
+      })
+      
+        })
+        test('POST:404 on bad path', ()=>{
+          
+          return request(app)
+          .post('/api/articless/1/comments')
+          .expect(404)
+ 
+      })
+      test('POST:404 sends an appropriate and error message when given a valid but non-existent id', () => {
+        return request(app)
+          .post('/api/articles/999/comments')
+          .expect(404)
+          .then((response) => {
+            
+            expect(response.body.msg).toBe('item doesn\'t exist');
+          });
+      })
+      test('POST:400 sends an appropriate and error message when given an invalid id', () => {
+        return request(app)
+          .post('/api/articles/banana/comments')
+          .expect(400)
+          .then((response) => {
+            expect(response.body.msg).toBe('Invalid input');
+          });
+      }
+      ) 
+      
+      })

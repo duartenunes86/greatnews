@@ -1,7 +1,8 @@
 const {
     selectArticleById,
     selectArticles,
-    selectCommentsByArticle
+    selectCommentsByArticle,
+    insertCommentToArticle
     
   } = require('../models/articles-models.js');
   
@@ -53,3 +54,12 @@ const {
             next(err)
   })
 }
+exports.postCommentToArticle = (req, res, next) => {
+  const article_id=req.params.article_id
+  
+  insertCommentToArticle(req.body.username, req.body.body, article_id).then((comment) => {
+    res.status(201).send({ comment });
+  }) .catch((err) => {
+    next(err);
+  });
+  }

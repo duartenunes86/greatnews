@@ -64,3 +64,20 @@ exports.selectArticles = () => {
       
       return result.rows;
       })}})}
+
+
+      exports.insertCommentToArticle = (username, body, id) => {
+        return checkExists('articles', 'article_id', id).then((article)=>{
+        if(article){
+          const date = new Date().toISOString()
+      return db.query(`INSERT INTO comments(body,
+      votes,
+      author,
+      article_id,
+      created_at) VALUES($1,$2,$3,$4, $5) RETURNING *;`,[body, 0, username,id, date]).then((comment)=>{
+        return comment.rows[0]
+      })
+    }})
+      }
+
+      
