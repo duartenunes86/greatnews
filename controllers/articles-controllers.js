@@ -13,23 +13,28 @@ const {
     selectArticleById(article_id).then((article) => {
       
       
-      if (article.length===0) {res.status(404).send({ msg:'article doesn\'t exist' });
-}
+     
 
-      res.status(200).send( {article });
+      res.status(200).send(  {article });
 
-   } ) .catch((err) => {
-      next(err);
-    });}
+
+
+  }) 
+    .catch((err) => {
+      
+      next(err)
+  });
+} 
     
     exports.getArticles = (req, res, next) => {
         
-        selectArticles().then((results) => {
+        selectArticles().then((articles) => {
 
           
-          res.status(200).send( {results });
+          res.status(200).send( {articles});
           
-        }) .catch((err) => {
+        }) 
+        .catch((err) => {
           next(err);
         });
         }
@@ -37,15 +42,14 @@ const {
         const id =req.params.article_id;
         
         
-          selectCommentsByArticle(id).then((results) => {
+          selectCommentsByArticle(id).then((comments) => {
            
-            if (results.length===0) {res.status(404).send({ msg:'article doesn\'t exist' });
-          }else{
-            res.status(200).send( {results });
-          }
             
-          }) .catch((error) => {
-            res.status(500).send({ msg: 'An error occurred' });
-  });
-          };
+            res.status(200).send( {comments});
           
+            
+          }) .catch((err) => {
+            
+            next(err)
+  })
+}
