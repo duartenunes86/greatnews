@@ -198,7 +198,7 @@ describe('error 404 GET /api/topics/', ()=>{
         test('GET:404 on bad path', ()=>{
           
           return request(app)
-          .get('/api/articless/1/comments')
+          .post('/api/articless/1/comments')
           .expect(404)
  
       })
@@ -208,7 +208,7 @@ describe('error 404 GET /api/topics/', ()=>{
           .expect(404)
           .then((response) => {
             
-            expect(response.body.msg).toBe('item doesn\'t exist');
+            expect(response.body.msg).toBe('Invalid input');
           });
       })
       test('GET:400 sends an appropriate and error message when given an invalid id', () => {
@@ -226,54 +226,120 @@ describe('error 404 GET /api/topics/', ()=>{
         .expect(200)
       })
     })
-    describe("Post 201: inserts a new comment to some article", ()=>{ 
-      let dateCreated=""
+    describe("Post: inserts a new comment to some article", ()=>{ 
+      const newComment = {
+        username: 'butter_bridge',
+        body: 'I do not believe you'
+      };
+      const commentWithoutUser = {
+        body: 'This is a test'
+      }
+      const commentWithMoreProperties = {
+        username: 'butter_bridge',
+        body: 'This is complicated',
+        hero:'superman'
+      }
+      const commentWithWrongUser = {
+        username: 'batman',
+        body: 'I like fighting the crime'
+      }
       test('POST:201 inserts a new comment to the db and sends the new comment back to the client', () => {
-        const newComment = {
-          username: 'butter_bridge',
-          body: 'I do not believe you'
-        };
+        
+
         return request(app)
           .post('/api/articles/1/comments')
           .send(newComment)
           .expect(201)
           .then((response) => {
-            console.log(response.body)
-            expect(response.status).toBe(201); // Check the HTTP status code
-    expect(response.body.comment).toHaveProperty('created_at'); // Check if 'comment' property exists
-    expect(response.body.comment.body).toEqual(newComment.body);
-    expect(response.body.comment.author).toEqual(newComment.username);
-    expect(response.body.comment.votes).toEqual(0)
-    expect(response.body.comment.article_id).toEqual(1)
+            
+            
+   
+    expect(response.body.comment).toEqual(expect.objectContaining({
+      body: newComment.body,
+      
+      article_id: 1,
+      
+      votes: 0,
+      author:newComment.username
+    }))
+  })
      
      
       })
       
-        })
+        
         test('POST:404 on bad path', ()=>{
           
           return request(app)
           .post('/api/articless/1/comments')
+          .send(newComment)
           .expect(404)
  
       })
       test('POST:404 sends an appropriate and error message when given a valid but non-existent id', () => {
         return request(app)
           .post('/api/articles/999/comments')
+          .send(newComment)
           .expect(404)
           .then((response) => {
             
-            expect(response.body.msg).toBe('item doesn\'t exist');
+            expect(response.body.msg).toBe('Invalid input');
           });
       })
-      test('POST:400 sends an appropriate and error message when given an invalid id', () => {
+      test('POST:400 missing required field(s), e.g. no username or body properties', () => {
         return request(app)
-          .post('/api/articles/banana/comments')
+          .post('/api/articles/1/comments')
+          .send(commentWithoutUser)
           .expect(400)
           .then((response) => {
             expect(response.body.msg).toBe('Invalid input');
           });
       }
       ) 
+      test('POST:201 ignores unnecessary properties', () => {
+        return request(app)
+          .post('/api/articles/1/comments')
+          .send(commentWithMoreProperties)
+          .expect(201)
+          .then((response) => 
+            {
+            
+            
+   
+              expect(response.body.comment).toEqual(expect.objectContaining({
+                body: commentWithMoreProperties.body,
+                comment_id:expect.any(Number),
+                created_at:expect.any(String),
+
+                
+                article_id: 1,
+                
+                votes: 0,
+                author:commentWithMoreProperties.username
+              }))
+            })
+          });
       
-      })
+      
+      test('POST:404 username does not exist', () => {
+        return request(app)
+          .post('/api/articles/banana/comments')
+          .send(commentWithWrongUser)
+          .expect(404)
+          .then((response) => {
+            expect(response.body.msg).toBe('Invalid input');
+          });
+      }
+      ) 
+      test('POST:400 sends an appropriate and error message when given an invalid id', () => {
+        return request(app)
+          .post('/api/articles/banana/comments')
+          .send(newComment)
+          .expect(400)
+          .then((response) => {
+            expect(response.body.msg).toBe('Invalid input');
+          });
+      }
+      ) 
+    }) 
+      

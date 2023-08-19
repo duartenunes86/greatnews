@@ -56,10 +56,17 @@ const {
 }
 exports.postCommentToArticle = (req, res, next) => {
   const article_id=req.params.article_id
-  
+  console.log(req.body.username, "username")
+  if(typeof req.body.username==='undefined' || typeof req.body.body==='undefined'){
+   return Promise.reject(({status:400, msg:"Invalid input"}))
+   .catch((err) =>{
+next(err)
+   })
+  }else{
   insertCommentToArticle(req.body.username, req.body.body, article_id).then((comment) => {
-    res.status(201).send({ comment });
-  }) .catch((err) => {
+    res.status(201).send({ comment });})
+   .catch((err) => {
     next(err);
   });
+}
   }
