@@ -6,7 +6,8 @@ const topicData = require('../db/data/test-data/topics');
 const userData = require('../db/data/test-data/users');
 const articleData = require('../db/data/test-data/articles');
 const commentData = require('../db/data/test-data/comments');
-const fs = require('fs/promises')
+const fs = require('fs/promises');
+const {checkExists} = require('../utils.js');
 
 
 
@@ -197,7 +198,7 @@ describe('error 404 GET /api/topics/', ()=>{
         test('GET:404 on bad path', ()=>{
           
           return request(app)
-          .get('/api/articless/1/comments')
+          .post('/api/articless/1/comments')
           .expect(404)
  
       })
@@ -207,7 +208,7 @@ describe('error 404 GET /api/topics/', ()=>{
           .expect(404)
           .then((response) => {
             
-            expect(response.body.msg).toBe('item doesn\'t exist');
+            expect(response.body.msg).toBe('Invalid input');
           });
       })
       test('GET:400 sends an appropriate and error message when given an invalid id', () => {
@@ -225,3 +226,120 @@ describe('error 404 GET /api/topics/', ()=>{
         .expect(200)
       })
     })
+    describe("Post: inserts a new comment to some article", ()=>{ 
+      const newComment = {
+        username: 'butter_bridge',
+        body: 'I do not believe you'
+      };
+      const commentWithoutUser = {
+        body: 'This is a test'
+      }
+      const commentWithMoreProperties = {
+        username: 'butter_bridge',
+        body: 'This is complicated',
+        hero:'superman'
+      }
+      const commentWithWrongUser = {
+        username: 'batman',
+        body: 'I like fighting the crime'
+      }
+      test('POST:201 inserts a new comment to the db and sends the new comment back to the client', () => {
+        
+
+        return request(app)
+          .post('/api/articles/1/comments')
+          .send(newComment)
+          .expect(201)
+          .then((response) => {
+            
+            
+   
+    expect(response.body.comment).toEqual(expect.objectContaining({
+      body: newComment.body,
+      
+      article_id: 1,
+      
+      votes: 0,
+      author:newComment.username
+    }))
+  })
+     
+     
+      })
+      
+        
+        test('POST:404 on bad path', ()=>{
+          
+          return request(app)
+          .post('/api/articless/1/comments')
+          .send(newComment)
+          .expect(404)
+ 
+      })
+      test('POST:404 sends an appropriate and error message when given a valid but non-existent id', () => {
+        return request(app)
+          .post('/api/articles/999/comments')
+          .send(newComment)
+          .expect(404)
+          .then((response) => {
+            
+            expect(response.body.msg).toBe('Invalid input');
+          });
+      })
+      test('POST:400 missing required field(s), e.g. no username or body properties', () => {
+        return request(app)
+          .post('/api/articles/1/comments')
+          .send(commentWithoutUser)
+          .expect(400)
+          .then((response) => {
+            expect(response.body.msg).toBe('Invalid input');
+          });
+      }
+      ) 
+      test('POST:201 ignores unnecessary properties', () => {
+        return request(app)
+          .post('/api/articles/1/comments')
+          .send(commentWithMoreProperties)
+          .expect(201)
+          .then((response) => 
+            {
+            
+            
+   
+              expect(response.body.comment).toEqual(expect.objectContaining({
+                body: commentWithMoreProperties.body,
+                comment_id:expect.any(Number),
+                created_at:expect.any(String),
+
+                
+                article_id: 1,
+                
+                votes: 0,
+                author:commentWithMoreProperties.username
+              }))
+            })
+          });
+      
+      
+      test('POST:404 username does not exist', () => {
+        return request(app)
+          .post('/api/articles/banana/comments')
+          .send(commentWithWrongUser)
+          .expect(404)
+          .then((response) => {
+            expect(response.body.msg).toBe('Invalid input');
+          });
+      }
+      ) 
+      test('POST:400 sends an appropriate and error message when given an invalid id', () => {
+        return request(app)
+          .post('/api/articles/banana/comments')
+          .send(newComment)
+          .expect(400)
+          .then((response) => {
+            expect(response.body.msg).toBe('Invalid input');
+          });
+      }
+      ) 
+    }) 
+      

@@ -5,10 +5,10 @@ const checkExists =  (table, column, value) => {
   
  const queryStr= format('SELECT * FROM %I WHERE %I = $1;', table, column)
   return db.query(queryStr, [value]).then((dbOutput)=>{
-console.log(db.Output)
+
   if (dbOutput.rows.length === 0) {
    
-    return Promise.reject({ status: 404, msg: 'item doesn\'t exist' });
+    return Promise.reject({ status: 404, msg: 'Invalid input' });
   }
   else return true
 })}
@@ -64,3 +64,26 @@ exports.selectArticles = () => {
       
       return result.rows;
       })}})}
+
+
+      exports.insertCommentToArticle = (username, body, id) => {
+        return checkExists('users', 'username', username).then(userExists=>{
+          if(userExists){
+        return checkExists('articles', 'article_id', id).then((article)=>{
+          
+        if(article){
+         
+      return db.query(`INSERT INTO comments(body,
+     
+      author,
+      article_id) VALUES($1,$2,$3) RETURNING *;`,[body, username,id]).then((comment)=>{
+        return comment.rows[0]
+      })
+    }
+ 
+  
+  
+  })
+      }
+
+    })} 
