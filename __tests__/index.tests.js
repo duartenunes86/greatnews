@@ -342,4 +342,92 @@ describe('error 404 GET /api/topics/', ()=>{
       }
       ) 
     }) 
+    describe("PATCH /api/articles/:article_id", ()=>{
+      const newVote = { inc_votes: 1 }
+      test("PATCH:200 ok when client send an objects of votes to increment", ()=>{
+        return request(app)
+        .patch('/api/articles/1')
+        .send(newVote)
+        .expect(200).then((response) => 
+        {
+        
+        
+
+          expect(response.body.article).toEqual(expect.objectContaining({
+            title: expect.any(String),
+                article_id: expect.any(Number),
+                author:expect.any(String),
+                body: expect.any(String),
+                topic: expect.any(String),
+                created_at: expect.any(String),
+                 votes: 1,
+                article_img_url: expect.any(String),
+               
+          }))
+        })
+      })
+      test('PATCH:404 on bad path', ()=>{
+          
+        return request(app)
+        .patch('/api/articless/1')
+        .send(newVote)
+        .expect(404)
+
+    })
+    test('PATCH:404 sends an appropriate and error message when given a valid but non-existent id', () => {
+      return request(app)
+        .patch('/api/articles/999')
+        .send(newVote)
+        .expect(404)
+        .then((response) => {
+          
+          expect(response.body.msg).toBe('Invalid input');
+        });
+    })
+    test('PATCH:400 missing required field(s)', () => {
+      return request(app)
+        .patch('/api/articles/1')
+        .send({})
+        .expect(400)
+        .then((response) => {
+          expect(response.body.msg).toBe('Invalid input');
+        });
+    }
+    ) 
+    test('PATCH:200 ignores unnecessary properties', () => {
+      const newVoteBanana = { inc_votes: 1, banana:33 }
+      return request(app)
+        .patch('/api/articles/1')
+        .send(newVoteBanana)
+        .expect(200)
+        .then((response) => 
+          {
+          
+          
+ 
+            expect(response.body.article).toEqual(expect.objectContaining({
+              title: expect.any(String),
+                  article_id: expect.any(Number),
+                  author:expect.any(String),
+                  body: expect.any(String),
+                  topic: expect.any(String),
+                  created_at: expect.any(String),
+                   votes: 1,
+                  article_img_url: expect.any(String),
+                 
+            }))
+          })
+        });
+        test('PATCH:400 sends an appropriate and error message when given an invalid id', () => {
+          return request(app)
+            .patch('/api/articles/banana')
+            .send(newVote)
+            .expect(400)
+            .then((response) => {
+              expect(response.body.msg).toBe('Invalid input');
+            });
+        }
+        ) 
+      }) 
+    
       

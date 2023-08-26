@@ -87,3 +87,15 @@ exports.selectArticles = () => {
       }
 
     })} 
+    exports.updateVotesByArticle= (id, newVote) =>{
+      return checkExists('articles', 'article_id', id).then((exists)=>{
+          if(exists){
+          return db.query('SELECT votes FROM articles WHERE article_id=$1;', [id]).then((votes)=>{
+            return db.query('UPDATE articles SET votes = $1 WHERE article_id=$2 RETURNING *;',[votes.rows[0].votes+newVote,id]).then((article)=>{
+              console.log(article)
+              return article.rows[0]
+            })
+          })
+        }
+      })
+    }

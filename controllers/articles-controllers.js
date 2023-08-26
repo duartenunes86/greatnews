@@ -2,7 +2,8 @@ const {
     selectArticleById,
     selectArticles,
     selectCommentsByArticle,
-    insertCommentToArticle
+    insertCommentToArticle,
+    updateVotesByArticle
     
   } = require('../models/articles-models.js');
   
@@ -56,7 +57,7 @@ const {
 }
 exports.postCommentToArticle = (req, res, next) => {
   const article_id=req.params.article_id
-  console.log(req.body.username, "username")
+  
   if(typeof req.body.username==='undefined' || typeof req.body.body==='undefined'){
    return Promise.reject(({status:400, msg:"Invalid input"}))
    .catch((err) =>{
@@ -69,4 +70,16 @@ next(err)
     next(err);
   });
 }
+  }
+
+  exports.patchVotesByArticle = (req, res, next) =>{
+    const id=req.params.article_id
+    
+    const newVote=req.body.inc_votes
+    
+    updateVotesByArticle(id, newVote).then((article) =>{
+      res.status(200).send({article})
+    }).catch((err)=>{
+      next(err)
+    })
   }
