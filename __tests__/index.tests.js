@@ -429,5 +429,28 @@ describe('error 404 GET /api/topics/', ()=>{
         }
         ) 
       }) 
+      describe("PATCH /api/comments/:comment_id", ()=>{
+        const newVote1 = { inc_votes: 1 }
+        test("PATCH:200 ok when client send an objects of votes to increment", ()=>{
+          return request(app)
+          .patch('/api/comments/3')
+          .send(newVote1)
+          .expect(200).then((response) => 
+          {
+          
+          
+  
+            expect(response.body.comment).toEqual(expect.objectContaining({
+              
+                  article_id: expect.any(Number),
+                  author:expect.any(String),
+                  body: expect.any(String),
+                  comment_id:expect.any(Number),
+                   votes: 101,
+                  created_at: expect.any(String)
+                 
+            }))
+          })
+        })
     
-      
+      })

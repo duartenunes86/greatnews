@@ -3,7 +3,8 @@ const {
     selectArticles,
     selectCommentsByArticle,
     insertCommentToArticle,
-    updateVotesByArticle
+    updateVotesByArticle,
+    updateCommentVotes
     
   } = require('../models/articles-models.js');
   
@@ -79,6 +80,17 @@ next(err)
     
     updateVotesByArticle(id, newVote).then((article) =>{
       res.status(200).send({article})
+    }).catch((err)=>{
+      next(err)
+    })
+  }
+  exports.patchVotesByComment = (req, res, next) =>{
+    const id=req.params.comment_id
+    
+    const newVote=req.body.inc_votes
+    
+    updateCommentVotes(id, newVote).then((comment) =>{
+      res.status(200).send({comment})
     }).catch((err)=>{
       next(err)
     })

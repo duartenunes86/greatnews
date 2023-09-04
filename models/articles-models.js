@@ -87,6 +87,18 @@ exports.selectArticles = () => {
       }
 
     })} 
+    exports.updateCommentVotes= (comment_id, newVote) =>{
+      return checkExists('comments', 'comment_id', comment_id).then((exists)=>{
+          if(exists){
+          return db.query('SELECT votes FROM comments WHERE comment_id=$1;', [comment_id]).then((votes)=>{
+            return db.query('UPDATE comments SET votes = $1 WHERE comment_id=$2 RETURNING *;',[votes.rows[0].votes+newVote,comment_id]).then((comment)=>{
+              console.log(comment)
+              return comment.rows[0]
+            })
+          })
+        }
+      })
+    }
     exports.updateVotesByArticle= (id, newVote) =>{
       return checkExists('articles', 'article_id', id).then((exists)=>{
           if(exists){
