@@ -454,3 +454,49 @@ describe('error 404 GET /api/topics/', ()=>{
         })
     
       })
+      describe('GET /api/users', () => {
+        test('GET:200 sends an object with the users', () => {
+          
+          return request(app)
+            .get(`/api/users`)
+            .expect(200)
+            .then((response) => {
+           
+               
+              response.body.users.forEach(element=>{
+                
+                
+                expect(element).toEqual(expect.objectContaining({
+                  username: expect.any(String),
+                  name: expect.any(String),
+                  
+                  avatar_url: expect.any(String),
+                  
+                }))
+              })
+              
+                       
+            });
+          }
+        )
+      })
+      describe('GET /api/users/:username', () => {
+        test('GET:200 sends an object with the user corresponding to the username given to the client', () => {
+          
+          return request(app)
+            .get(`/api/users/butter_bridge`)
+            .expect(200)
+            .then((response) => {
+              
+              expect(response.body.user).toEqual(expect.any(Object));
+              
+              
+                expect(response.body.user).toEqual(expect.objectContaining({
+                  username: "butter_bridge",
+                  name: "jonny",
+                  avatar_url:"https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
+                }))
+              })
+                       
+            })
+          })
