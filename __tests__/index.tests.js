@@ -433,7 +433,7 @@ describe('error 404 GET /api/topics/', ()=>{
         const newVote1 = { inc_votes: 1 }
         test("PATCH:200 ok when client send an objects of votes to increment", ()=>{
           return request(app)
-          .patch('/api/comments/3')
+          .patch('/api/comments/1')
           .send(newVote1)
           .expect(200).then((response) => 
           {
@@ -446,7 +446,7 @@ describe('error 404 GET /api/topics/', ()=>{
                   author:expect.any(String),
                   body: expect.any(String),
                   comment_id:expect.any(Number),
-                   votes: 101,
+                   votes: 17,
                   created_at: expect.any(String)
                  
             }))
