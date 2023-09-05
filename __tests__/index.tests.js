@@ -500,3 +500,32 @@ describe('error 404 GET /api/topics/', ()=>{
                        
             })
           })
+          describe("Post: inserts a new user", ()=>{ 
+           const newUser={
+            username:"batman",
+            name:"Bruce",
+            avatar_url:"https://m.media-amazon.com/images/M/MV5BMTYwNjAyODIyMF5BMl5BanBnXkFtZTYwNDMwMDk2._V1_FMjpg_UX1000_.jpg"
+           }
+            test('POST:201 inserts a new user to the db and sends the new user back to the client', () => {
+              
+      
+              return request(app)
+                .post('/api/users')
+                .send(newUser)
+                .expect(201)
+                .then((response) => {
+                  
+                  
+         
+          expect(response.body.user).toEqual(expect.objectContaining({
+            username:"batman",
+            
+            name:"Bruce",
+            
+            avatar_url:"https://m.media-amazon.com/images/M/MV5BMTYwNjAyODIyMF5BMl5BanBnXkFtZTYwNDMwMDk2._V1_FMjpg_UX1000_.jpg"
+          }))
+        })
+           
+           
+            })
+          })
