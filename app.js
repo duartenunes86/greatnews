@@ -8,7 +8,7 @@ const { getArticleById, getArticles, getCommentsByArticle, postCommentToArticle,
 const { getUsers, getUserByUsername, postUser} = require('./controllers/users-controllers.js');
 const cors = require('cors');
 const corsOptions = {
-  origin: 'https://great-news.onrender.com', 
+  origin: 'https://great-news.onrender.c', 
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   allowedHeaders: 'Content-Type,Authorization',
 };
