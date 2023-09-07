@@ -7,15 +7,15 @@ const { getAPI } = require('./controllers/api-controllers.js')
 const { getArticleById, getArticles, getCommentsByArticle, postCommentToArticle, patchVotesByArticle, patchVotesByComment } = require('./controllers/articles-controllers.js')
 const { getUsers, getUserByUsername, postUser} = require('./controllers/users-controllers.js');
 const cors = require('cors');
-const corsOptions = {
-  origin: 'https://great-news.onrender.c', 
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  allowedHeaders: 'Content-Type,Authorization',
-};
+// const corsOptions = {
+//   origin: 'https://great-news.onrender.c', 
+//   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+//   allowedHeaders: 'Content-Type,Authorization',
+// };
 
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
 
-// app.use(cors())
+app.use(cors())
 app.use(express.json())
 
 app.get('/api/topics', getTopics);
