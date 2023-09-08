@@ -529,3 +529,28 @@ describe('error 404 GET /api/topics/', ()=>{
            
             })
           })
+          describe("DELETE /api/comments/:comment_id", ()=>{
+            
+            test("DELETE:202 when given an existing comment_id", ()=>{
+              return request(app)
+              .delete('/api/comments/1')
+              
+              .expect(201).then((response) => 
+              {
+              
+              
+      
+                expect(response.body.comment).toEqual(expect.objectContaining({
+                  
+                      article_id: expect.any(Number),
+                      author:expect.any(String),
+                      body: expect.any(String),
+                      comment_id:1,
+                       votes: expect.any(Number),
+                      created_at: expect.any(String)
+                     
+                }))
+              })
+            })
+        
+          })

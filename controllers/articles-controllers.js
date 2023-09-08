@@ -4,7 +4,8 @@ const {
     selectCommentsByArticle,
     insertCommentToArticle,
     updateVotesByArticle,
-    updateCommentVotes
+    updateCommentVotes, 
+    deleteComment
     
   } = require('../models/articles-models.js');
   
@@ -95,3 +96,16 @@ next(err)
       next(err)
     })
   }
+
+  exports.deleteCommentById = (req, res, next) =>{
+    const id=req.params.comment_id
+    deleteComment(id).then((comment)=>{
+      res.status(201).send({comment})
+
+    }).catch((err)=>{
+      next(err)
+    })
+  }
+
+
+  

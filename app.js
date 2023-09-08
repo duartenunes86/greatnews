@@ -4,7 +4,7 @@ const {
   getTopics
 } = require('./controllers/topics-controllers.js');
 const { getAPI } = require('./controllers/api-controllers.js')
-const { getArticleById, getArticles, getCommentsByArticle, postCommentToArticle, patchVotesByArticle, patchVotesByComment } = require('./controllers/articles-controllers.js')
+const { getArticleById, getArticles, getCommentsByArticle, postCommentToArticle, patchVotesByArticle, patchVotesByComment, deleteCommentById } = require('./controllers/articles-controllers.js')
 const { getUsers, getUserByUsername, postUser} = require('./controllers/users-controllers.js');
 const cors = require('cors');
 // const corsOptions = {
@@ -29,6 +29,7 @@ app.patch('/api/comments/:comment_id', patchVotesByComment)
 app.get('/api/users', getUsers)
 app.get('/api/users/:username', getUserByUsername)
 app.post('/api/users', postUser)
+app.delete('/api/comments/:comment_id', deleteCommentById)
 handleCustomErrors = (err, req, res, next) => {
   if (err.status && err.msg) {
     res.status(err.status).send({ msg: err.msg });

@@ -111,3 +111,15 @@ exports.selectArticles = () => {
         }
       })
     }
+
+    exports.deleteComment = (id) =>
+    {
+      return checkExists('comments', 'comment_id', id).then((exists)=>{
+        if(exists){
+         return db.query(`DELETE FROM comments WHERE comment_id=$1 RETURNING *`, [id]).then((comment)=>{
+          return comment.rows[0]
+         })
+        }
+
+
+    })}
